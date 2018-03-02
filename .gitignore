@@ -1,0 +1,5 @@
+.idea
+out/*
+MQCorrelation.iml
+testFile.log
+.DS_Store

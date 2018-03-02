@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+    <property resource="version.properties" />
+
+    <!--<appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">-->
+
+    <!-- FOR TESTING -->
+    <appender name="STDOUT_JSON" class="ch.qos.logback.core.FileAppender">
+        <file>testFile.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <!-- FOR TESTING -->
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <mdc/> <!-- MDC variables on the Thread will be written as JSON fields-->
+                <context/> <!--Outputs entries from logback's context -->
+                <version/> <!-- Logstash json format version, the @version field in the output-->
+                <logLevel />
+                <loggerName/>
+
+                <pattern>
+                    <pattern>
+                        {
+                        "app_name": "${projectName}",
+                        "app_version": "play-template-MQ",
+                        "event_date": "%date{yyyyMMdd'T'HHmmss.SSSZ}",
+                        "millis_since_app_start": "%relative",
+                        "exception": "%exception{0}"
+                        }
+                    </pattern>
+                </pattern>
+
+                <threadName/>
+                <message/>
+
+                <logstashMarkers/> <!-- Useful so we can add extra information for specific log lines as Markers-->
+                <arguments/> <!--or through StructuredArguments-->
+
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- If running local build output human readable else output json -->
+    <if condition='property("version").contains("local")'>
+        <then>
+            <property name="APPENDER" value="STDOUT_JSON"/>
+            <property name="APP_LOG_LEVEL" value="DEBUG"/>
+        </then>
+        <else>
+            <property name="APPENDER" value="STDOUT_JSON"/>
+            <property name="APP_LOG_LEVEL" value="${TV2APP_LOG_LEVEL}"/>
+        </else>
+    </if>
+
+    <root>
+        <level value="${APP_LOG_LEVEL}" />
+        <appender-ref ref="${APPENDER}" />
+    </root>
+
+</configuration>
