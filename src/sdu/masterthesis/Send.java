@@ -22,13 +22,13 @@ public class Send {
         Connection connection = factory.newConnection();
         PlayMQChannel playMQChannel = new PlayMQChannel(connection.createChannel());
 
-        playMQChannel.queueDeclare(QUEUE_NAME, false, false, false, null);
+        playMQChannel.getChannel().queueDeclare(QUEUE_NAME, false, false, false, null);
 
         String message = "Hello World!";
         playMQChannel.basicPublishCustomPlay("", QUEUE_NAME, message.getBytes("UTF-8"));
         LOG.debug(" [X] Sent '" + message + "'" + " IN MDC: " + MDC.get(HEADER_CORRELATION_ID));
 
-        playMQChannel.close();
+        playMQChannel.getChannel().close();
         connection.close();
     }
 }

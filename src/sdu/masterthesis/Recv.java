@@ -23,7 +23,7 @@ public class Recv {
 
         channel.queueDeclare(QUEUE_NAME, false, false, false, null);
         LOG.debug(" [*] Waiting for messages. To exit press CTRL+C");
-
+        
         Consumer consumer = new PlayMQConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties basicProperties, byte[] body) throws IOException {
