@@ -21,10 +21,14 @@ public class PlayMQChannel {
     }
 
     private AMQP.BasicProperties generateBasicPropertiesAndAddToMDC() {
-        String uuid = UUID.randomUUID().toString();
-        AMQP.BasicProperties props = new AMQP.BasicProperties().builder().correlationId(uuid).build();
-        MDC.put(HEADER_CORRELATION_ID, uuid);
-        return props;
+        if(MDC.get(HEADER_CORRELATION_ID) == null) {
+            String uuid = UUID.randomUUID().toString();
+            MDC.put(HEADER_CORRELATION_ID, uuid);
+            return new AMQP.BasicProperties().builder().correlationId(uuid).build();
+        } else {
+            String uuid = MDC.get(HEADER_CORRELATION_ID);
+            return new AMQP.BasicProperties().builder().correlationId(uuid).build();
+        }
     }
 
     public void basicPublishCustomPlay(String s, String queueName, byte[] bytes) throws IOException {
